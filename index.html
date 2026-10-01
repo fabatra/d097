@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliação Interativa: Progressão Geométrica (D097_M)</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #cbd5e1;
+      --success: #16a34a;
+      --error: #dc2626;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+    .container { max-width: 800px; width: 100%; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+
+    h1 { color: var(--primary); font-size: 1.5rem; text-align: center; margin-bottom: 5px; }
+    p.subtitle { text-align: center; color: #64748b; font-size: 0.95rem; margin-top: 0; margin-bottom: 25px; }
+
+    .form-group { margin-bottom: 18px; }
+    label { font-weight: bold; display: block; margin-bottom: 6px; }
+    input[type="text"], input[type="email"], select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; }
+
+    .btn { background: var(--primary-light); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s; }
+    .btn:hover { background: var(--primary); }
+    .btn-secondary { background: #64748b; margin-top: 10px; }
+    .btn-secondary:hover { background: #475569; }
+
+    .revision-box { background: #eff6ff; border-left: 5px solid var(--primary-light); padding: 18px; border-radius: 8px; margin-bottom: 20px; display: none; }
+    .revision-box h3 { margin-top: 0; color: var(--primary); font-size: 1.15rem; }
+
+    .example-card {
+      background: #ffffff;
+      border: 1px solid #93c5fd;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 12px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .calc-block {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-top: 8px;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      color: #0f172a;
+    }
+
+    .option-btn { background: #f1f5f9; border: 1px solid var(--border); padding: 12px; margin-bottom: 8px; border-radius: 6px; width: 100%; text-align: left; cursor: pointer; font-size: 1rem; }
+    .option-btn:hover { background: #e2e8f0; }
+    .option-btn.selected { background: #dbeafe; border-color: var(--primary-light); font-weight: bold; }
+
+    .feedback-box { padding: 15px; border-radius: 6px; margin-top: 15px; font-size: 0.95rem; line-height: 1.5; display: none; }
+    .feedback-box.correct { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+    .feedback-box.incorrect { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .progress { height: 8px; background: #e2e8f0; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--primary-light); width: 0%; transition: width 0.3s; }
+
+    /* Estilos da Prova Corrigida */
+    .report-header { border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .report-header-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+    .report-stamp { border: 2px solid var(--primary); color: var(--primary); padding: 5px 12px; font-weight: bold; font-size: 0.85rem; border-radius: 4px; text-align: center; }
+
+    .student-card { background: #f1f5f9; border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .student-card p { margin: 0; font-size: 0.95rem; }
+
+    .corrected-item { border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #ffffff; }
+    .corrected-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; }
+    .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+    .status-badge.certo { background: #dcfce7; color: var(--success); border: 1px solid #86efac; }
+    .status-badge.errado { background: #fee2e2; color: var(--error); border: 1px solid #fca5a5; }
+
+    .pedagogical-box { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin-top: 25px; }
+    .pedagogical-box h3 { margin-top: 0; color: #b45309; font-size: 1.1rem; }
+
+    .action-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 18px;
+      border-radius: 8px;
+      margin-top: 25px;
+    }
+
+    @media print {
+      .btn, .no-print, .progress, .action-card { display: none !important; }
+      body { background: white; padding: 0; color: #000; }
+      .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
+      .corrected-item { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- PASSO 1: IDENTIFICAÇÃO E REVISÃO -->
+    <div id="step-1" class="step active">
+      <h1>Avaliação Interativa de Matemática</h1>
+      <p class="subtitle">Descritor D097_M: Utilizar propriedades de progressões geométricas na resolução de problemas</p>
+
+      <div class="form-group">
+        <label for="student-name">Nome Completo do Aluno:</label>
+        <input type="text" id="student-name" placeholder="Digite seu nome completo">
+      </div>
+
+      <div class="form-group">
+        <label for="student-class">Turma:</label>
+        <select id="student-class">
+          <option value="">-- Selecione sua turma --</option>
+          <option value="3M1">3M1</option>
+          <option value="3M2">3M2</option>
+          <option value="3M3">3M3</option>
+        </select>
+      </div>
+
+      <button class="btn no-print" onclick="toggleRevision()">📖 Abrir Revisão Teórica e Exemplo Resolvido</button>
+
+      <div id="revision-content" class="revision-box">
+        <h3>Resumo Teórico: Progressão Geométrica (P.G.)</h3>
+        <p>Uma <b>Progressão Geométrica (P.G.)</b> é uma sequência numérica em que cada termo, a partir do segundo, é igual ao anterior multiplicado por uma constante chamada <b>razão (q)</b>.</p>
+        <p style="font-size: 1.1rem; text-align: center; color: var(--primary); background: #ffffff; padding: 10px; border-radius: 6px; border: 1px solid #93c5fd;">
+          <b>Termo Geral:</b> a<sub>n</sub> = a<sub>1</sub> · q<sup>n-1</sup> <br>
+          <b>Soma dos n primeiros termos:</b> S<sub>n</sub> = a<sub>1</sub> · (q<sup>n</sup> - 1) / (q - 1) &nbsp; (para q ≠ 1)
+        </p>
+        <ul>
+          <li><b>a<sub>1</sub>:</b> Primeiro termo da sequência.</li>
+          <li><b>q:</b> Razão da P.G. (calculada dividindo qualquer termo pelo anterior: q = a<sub>2</sub> / a<sub>1</sub>).</li>
+          <li><b>n:</b> Número de termos ou posição do termo desejado.</li>
+          <li><b>a<sub>n</sub>:</b> n-ésimo termo (termo geral).</li>
+          <li><b>S<sub>n</sub>:</b> Soma dos n primeiros termos.</li>
+        </ul>
+
+        <div class="example-card">
+          <h4 style="margin-top: 0; color: var(--primary);">📌 EXEMPLO RESOLVIDO PASSO A PASSO (Para Relembrar)</h4>
+          <p><b>Enunciado Exemplo:</b> Uma população de bactérias começa com <b>50 indivíduos (a<sub>1</sub> = 50)</b> e <b>dobra a cada hora (q = 2)</b>. Quantas bactérias haverá após <b>5 horas (a<sub>5</sub>)</b>?</p>
+          
+          <p><b>Como resolver passo a passo:</b></p>
+          <div class="calc-block">
+1. Anotar os dados do exercício:
+   • Primeiro termo (a₁) = 50
+   • Razão (q) = 2 (dobra a cada hora)
+   • Posição desejada (n) = 5 (5ª hora)
+
+2. Escrever a fórmula do termo geral da P.G.:
+   aₙ = a₁ · qⁿ⁻¹
+
+3. Substituir os valores na fórmula:
+   a₅ = 50 · 2⁵⁻¹
+   a₅ = 50 · 2⁴
+
+4. Calcular a potência primeiro (2⁴ = 16):
+   a₅ = 50 · 16
+
+5. Multiplicar os valores:
+   a₅ = 800 bactérias  ✅</div>
+          <p style="margin-bottom: 0; font-size: 0.85rem; color: #475569;"><i>💡 Dica: Lembre-se de calcular primeiro as potências antes de efetuar as multiplicações!</i></p>
+        </div>
+      </div>
+
+      <button class="btn" style="margin-top: 15px;" onclick="startQuiz()">Iniciar Quiz</button>
+    </div>
+
+    <!-- PASSO 2: AVALIAÇÃO INTERATIVA -->
+    <div id="step-2" class="step">
+      <div class="progress">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <div class="no-print" style="margin-bottom: 15px; text-align: right;">
+        <button class="btn btn-secondary" style="width: auto; padding: 6px 12px; font-size: 0.85rem;" onclick="toggleQuizRevision()">📖 Revisão & Exemplo</button>
+      </div>
+
+      <div id="quiz-revision" class="revision-box">
+        <h3>Lembrete: Progressão Geométrica (P.G.)</h3>
+        <p><b>Termo Geral:</b> a<sub>n</sub> = a<sub>1</sub> · q<sup>n-1</sup> | <b>Soma dos Termos:</b> S<sub>n</sub> = a<sub>1</sub> · (q<sup>n</sup> - 1) / (q - 1)</p>
+        <div class="calc-block">
+Exemplo Rápido: Se a₁ = 50 e q = 2:
+a₅ = 50 · 2⁴ = 50 · 16 = 800</div>
+      </div>
+
+      <h3 id="question-title">Questão 1</h3>
+      <p id="question-text" style="font-size: 1.05rem; line-height: 1.5;"></p>
+
+      <div id="options-container"></div>
+
+      <button id="btn-verify" class="btn no-print" style="margin-top: 15px;" onclick="verifyAnswer()">Verificar Resposta</button>
+
+      <div id="feedback" class="feedback-box"></div>
+
+      <button id="btn-next" class="btn no-print" style="margin-top: 15px; display: none;" onclick="nextQuestion()">Próxima Questão ➔</button>
+    </div>
+
+    <!-- PASSO 3: RELATÓRIO E PROVA CORRIGIDA -->
+    <div id="step-3" class="step">
+      <div class="report-header">
+        <div>
+          <div class="report-header-title">COMPROVANTE DE AVALIAÇÃO DE MATEMÁTICA</div>
+          <div style="font-size: 0.85rem; color: #64748b;">Descritor D097_M - Progressões Geométricas (PAEBES)</div>
+        </div>
+        <div class="report-stamp">PAEBES<br>AVALIAÇÃO</div>
+      </div>
+
+      <div class="student-card">
+        <p><b>Aluno(a):</b> <span id="res-name"></span></p>
+        <p><b>Turma:</b> <span id="res-class"></span></p>
+        <p><b>Nota Final:</b> <span id="res-score-pts" style="font-weight: bold; color: var(--primary);"></span> / 5,0 (<span id="res-percent"></span>%)</p>
+      </div>
+
+      <h3 style="color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 5px;">Correção Detalhada das Questões</h3>
+      <div id="corrected-questions-list"></div>
+
+      <div class="pedagogical-box">
+        <h3>📋 Parecer Pedagógico e Orientações do Professor</h3>
+        <div id="pedagogical-content"></div>
+      </div>
+
+      <!-- BOTÕES DE ENVIO -->
+      <div class="action-card no-print">
+        <div class="form-group">
+          <label for="res-email-input">E-mail para Envio da Cópia da Prova (Opcional):</label>
+          <input type="email" id="res-email-input" placeholder="exemplo@email.com">
+        </div>
+
+        <button id="btn-send-email" class="btn" onclick="sendEvaluation()">📄 Enviar Prova Corrigida (PDF)</button>
+        <button class="btn btn-secondary" onclick="window.print()" style="margin-top: 10px;">🖨️ Imprimir / Salvar Cópia Local em PDF</button>
+        <button class="btn btn-secondary" onclick="location.reload()" style="margin-top: 10px;">🔄 Refazer Avaliação</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // CONFIGURAÇÃO DO GOOGLE APPS SCRIPT / DRIVE
+    const DESTINATION_DRIVE_FOLDER = "https://drive.google.com/drive/folders/1-ExemploPastaDrive";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbx_SEU_SCRIPT_ID/exec";
+
+    // BANCO DE QUESTÕES (PAEBES D097_M - PROGRESSÃO GEOMÉTRICA)
+    const questions = [
+      {
+        id: 1,
+        title: "ITEM 1 - (PAEBES 2023) Freada do Automóvel",
+        text: "No meio de uma avenida movimentada, o motorista aciona os freios de seu automóvel. Após a freada, o automóvel percorre 24 metros no 1º segundo, 12 metros no 2º segundo, e assim por diante, percorrendo, em cada segundo, metade da distância que percorreu no segundo anterior. A distância total a ser percorrida no tempo de 4 segundos após a freada será de:",
+        options: [
+          "a) 15 metros.",
+          "b) 21 metros.",
+          "c) 27 metros.",
+          "d) 42 metros.",
+          "e) 45 metros."
+        ],
+        correct: 4, // e) 45 metros
+        explanation: "<b>Resolução Passo a Passo:</b><br>" +
+                     "1. Identificar a sequência de distâncias percorridas a cada segundo:<br>" +
+                     "   • 1º segundo (a₁): 24 m<br>" +
+                     "   • 2º segundo (a₂): 12 m (metade de 24)<br>" +
+                     "   • 3º segundo (a₃): 6 m (metade de 12)<br>" +
+                     "   • 4º segundo (a₄): 3 m (metade de 6)<br>" +
+                     "2. Somar as distâncias dos 4 segundos:<br>" +
+                     "   S₄ = 24 + 12 + 6 + 3 = <b>45 metros</b>.<br>" +
+                     "Alternativa correta: <b>e) 45 metros</b>.",
+        tip: "Para calcular a distância total percorrida em um intervalo curto, basta somar a distância percorrida em cada segundo mantendo a razão de metade (q = 1/2)."
+      },
+      {
+        id: 2,
+        title: "ITEM 2 - (AMA 2024) Visualizações de Vídeo",
+        text: "Um grupo de estudantes publicou um vídeo em uma rede social, sobre a importância de se manter a escola limpa. No primeiro dia em que foi postado, esse vídeo tinha sido visualizado 10 vezes. No segundo dia, ele tinha sido visualizado 30 vezes. O número de visualizações foi crescendo de modo que esse número sempre triplicava a cada dia em relação ao dia anterior. No sétimo dia, quantas visualizações esse vídeo obteve?",
+        options: [
+          "a) 130.",
+          "b) 180.",
+          "c) 190.",
+          "d) 7 290.",
+          "e) 21 870."
+        ],
+        correct: 3, // d) 7 290
+        explanation: "<b>Resolução Passo a Passo:</b><br>" +
+                     "1. Anotar os dados da P.G.:<br>" +
+                     "   • Primeiro dia (a₁): 10 visualizações<br>" +
+                     "   • Razão (q): 3 (pois sempre triplica)<br>" +
+                     "   • Dia desejado (n): 7<br>" +
+                     "2. Usar a fórmula do termo geral aₙ = a₁ · qⁿ⁻¹:<br>" +
+                     "   a₇ = 10 · 3⁷⁻¹ = 10 · 3⁶<br>" +
+                     "3. Calcular 3⁶: 3⁶ = 729<br>" +
+                     "4. Multiplicar por 10: a₇ = 10 · 729 = <b>7 290 visualizações</b>.<br>" +
+                     "Alternativa correta: <b>d) 7 290</b>.",
+        tip: "Lembre-se de que no termo geral aₙ = a₁ · qⁿ⁻¹, o expoente da razão é (n - 1). Para o 7º dia, o expoente é 6."
+      },
+      {
+        id: 3,
+        title: "ITEM 3 - (AMA 2025) Competição de Arco e Flecha",
+        text: "Em uma competição de arco e flecha entre jovens indígenas, as pontuações de um determinado participante formaram uma progressão geométrica. Esse participante teve um total de 5 pontuações, sendo que sua segunda pontuação foi igual ao dobro da primeira. Já sua quinta pontuação foi de 80 pontos. Qual foi a primeira pontuação obtida por esse participante?",
+        options: [
+          "a) 2 pontos.",
+          "b) 5 pontos.",
+          "c) 10 pontos.",
+          "d) 40 pontos.",
+          "e) 80 pontos."
+        ],
+        correct: 1, // b) 5 pontos
+        explanation: "<b>Resolução Passo a Passo:</b><br>" +
+                     "1. Como a segunda pontuação é o dobro da primeira (a₂ = 2 · a₁), a razão da P.G. é <b>q = 2</b>.<br>" +
+                     "2. A quinta pontuação é a₅ = 80.<br>" +
+                     "3. Usar a fórmula do termo geral: a₅ = a₁ · q⁴<br>" +
+                     "   80 = a₁ · 2⁴<br>" +
+                     "   80 = a₁ · 16<br>" +
+                     "4. Isolar a₁: a₁ = 80 / 16 = <b>5 pontos</b>.<br>" +
+                     "Alternativa correta: <b>b) 5 pontos</b>.",
+        tip: "Se a₂ é o dobro de a₁, a razão é 2. Substituindo na fórmula do termo geral com a₅ = 80, encontramos a₁ dividindo 80 por 2⁴ (16)."
+      },
+      {
+        id: 4,
+        title: "ITEM 4 - (AMA 2024) Tamanho dos Arquivos Gerados",
+        text: "Fabrício criou um programa de computador para gerar uma sequência de 6 arquivos. O primeiro arquivo gerado tinha 3 quilobytes e, a partir do segundo, o tamanho do arquivo gerado era equivalente ao dobro do tamanho do arquivo anterior. Qual é a soma dos tamanhos desses arquivos gerados por esse programa que Fabrício criou?",
+        options: [
+          "a) 18 quilobytes.",
+          "b) 33 quilobytes.",
+          "c) 96 quilobytes.",
+          "d) 189 quilobytes.",
+          "e) 191 quilobytes."
+        ],
+        correct: 3, // d) 189 quilobytes
+        explanation: "<b>Resolução Passo a Passo:</b><br>" +
+                     "1. Anotar os dados da P.G.:<br>" +
+                     "   • a₁ = 3 kB, q = 2, n = 6 arquivos.<br>" +
+                     "2. Método 1 (Fórmula da Soma da P.G. Finita):<br>" +
+                     "   Sₙ = a₁ · (qⁿ - 1) / (q - 1)<br>" +
+                     "   S₆ = 3 · (2⁶ - 1) / (2 - 1) = 3 · (64 - 1) / 1 = 3 · 63 = <b>189 kB</b>.<br>" +
+                     "3. Método 2 (Somando a sequência):<br>" +
+                     "   Sequência: 3, 6, 12, 24, 48, 96.<br>" +
+                     "   Soma: 3 + 6 + 12 + 24 + 48 + 96 = <b>189 kB</b>.<br>" +
+                     "Alternativa correta: <b>d) 189 quilobytes</b>.",
+        tip: "Fique atento ao enunciado: a questão pede a SOMA dos tamanhos dos 6 arquivos, e não apenas o tamanho do último arquivo (que seria 96 kB)."
+      },
+      {
+        id: 5,
+        title: "ITEM 5 - (AMA 2025) Crescimento Populacional Indígena",
+        text: "Um estudo populacional monitorou o crescimento de uma população indígena em determinado território por um período de 5 anos. No primeiro ano de estudo, a população era de aproximadamente 542 habitantes e, ao longo desse monitoramento, essa população apresentou um crescimento anual que pôde ser modelado segundo uma progressão geométrica de razão 1,2. Qual foi a população aproximada dessa comunidade no terceiro ano do estudo?",
+        options: [
+          "a) 544 habitantes.",
+          "b) 650 habitantes.",
+          "c) 759 habitantes.",
+          "d) 780 habitantes.",
+          "e) 936 habitantes."
+        ],
+        correct: 3, // d) 780 habitantes
+        explanation: "<b>Resolução Passo a Passo:</b><br>" +
+                     "1. Anotar os dados:<br>" +
+                     "   • Primeiro ano (a₁): 542 habitantes<br>" +
+                     "   • Razão (q): 1,2<br>" +
+                     "   • Ano desejado (n): 3<br>" +
+                     "2. Usar a fórmula do termo geral a₃ = a₁ · q²:<br>" +
+                     "   a₃ = 542 · (1,2)²<br>" +
+                     "   a₃ = 542 · 1,44<br>" +
+                     "   a₃ = 780,48 habitantes.<br>" +
+                     "3. Arredondando para o valor inteiro mais próximo: <b>780 habitantes</b>.<br>" +
+                     "Alternativa correta: <b>d) 780 habitantes</b>.",
+        tip: "Para o terceiro ano (n = 3), multiplica-se o valor inicial por (1,2)², que é igual a 1,44. O resultado final aproximado é 780."
+      }
+    ];
+
+    // VARIÁVEIS DE ESTADO
+    let currentQuestionIndex = 0;
+    let selectedOptionIndex = null;
+    let userAnswers = [];
+    let studentName = "";
+    let studentClass = "";
+
+    // FUNÇÕES DE NAVEGAÇÃO E INTERAÇÃO
+    function toggleRevision() {
+      const rev = document.getElementById('revision-content');
+      rev.style.display = (rev.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function toggleQuizRevision() {
+      const rev = document.getElementById('quiz-revision');
+      rev.style.display = (rev.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function startQuiz() {
+      studentName = document.getElementById('student-name').value.trim();
+      studentClass = document.getElementById('student-class').value;
+
+      if (!studentName) {
+        alert("Por favor, digite seu nome completo para começar.");
+        return;
+      }
+      if (!studentClass) {
+        alert("Por favor, selecione sua turma.");
+        return;
+      }
+
+      document.getElementById('step-1').classList.remove('active');
+      document.getElementById('step-2').classList.add('active');
+
+      currentQuestionIndex = 0;
+      userAnswers = [];
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      selectedOptionIndex = null;
+
+      // Atualizar progresso
+      const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+      document.getElementById('progress-bar').style.width = progressPercent + '%';
+
+      document.getElementById('question-title').innerText = `Questão ${currentQuestionIndex + 1} de ${questions.length}: ${q.title}`;
+      document.getElementById('question-text').innerText = q.text;
+
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => selectOption(idx);
+        container.appendChild(btn);
+      });
+
+      // Resetar feedback e botões
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'none';
+      fb.className = 'feedback-box';
+      fb.innerHTML = '';
+
+      document.getElementById('btn-verify').style.display = 'block';
+      document.getElementById('btn-verify').disabled = false;
+      document.getElementById('btn-next').style.display = 'none';
+    }
+
+    function selectOption(index) {
+      selectedOptionIndex = index;
+      const btns = document.querySelectorAll('.option-btn');
+      btns.forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+    }
+
+    function verifyAnswer() {
+      if (selectedOptionIndex === null) {
+        alert("Por favor, selecione uma opção antes de verificar.");
+        return;
+      }
+
+      const q = questions[currentQuestionIndex];
+      const isCorrect = (selectedOptionIndex === q.correct);
+
+      // Desabilitar botões de opção e verificar
+      const btns = document.querySelectorAll('.option-btn');
+      btns.forEach(btn => btn.style.pointerEvents = 'none');
+      document.getElementById('btn-verify').disabled = true;
+
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'block';
+
+      if (isCorrect) {
+        fb.className = 'feedback-box correct';
+        fb.innerHTML = `<b>✨ Parabéns! Resposta Correta.</b><br>${q.explanation}`;
+      } else {
+        fb.className = 'feedback-box incorrect';
+        fb.innerHTML = `<b>❌ Resposta Incorreta.</b><br>Você marcou: <i>${q.options[selectedOptionIndex]}</i><br>A resposta certa é: <b>${q.options[q.correct]}</b><br><br>${q.explanation}<br><br>💡 <b>Dica:</b> ${q.tip}`;
+      }
+
+      userAnswers.push({
+        questionId: q.id,
+        selected: selectedOptionIndex,
+        isCorrect: isCorrect
+      });
+
+      document.getElementById('btn-next').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      document.getElementById('progress-bar').style.width = '100%';
+      document.getElementById('step-2').classList.remove('active');
+      document.getElementById('step-3').classList.add('active');
+
+      // Calcular Nota
+      const totalCorrect = userAnswers.filter(a => a.isCorrect).length;
+      const scorePts = (totalCorrect / questions.length) * 5.0;
+      const percent = (totalCorrect / questions.length) * 100;
+
+      document.getElementById('res-name').innerText = studentName;
+      document.getElementById('res-class').innerText = studentClass;
+      document.getElementById('res-score-pts').innerText = scorePts.toFixed(1).replace('.', ',');
+      document.getElementById('res-percent').innerText = percent.toFixed(0);
+
+      // Renderizar Correção Detalhada
+      const listContainer = document.getElementById('corrected-questions-list');
+      listContainer.innerHTML = '';
+
+      questions.forEach((q, idx) => {
+        const uAns = userAnswers[idx];
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'corrected-item';
+
+        const statusClass = uAns.isCorrect ? 'certo' : 'errado';
+        const statusText = uAns.isCorrect ? 'CORRETO (1,0 ponto)' : 'INCORRETO (0,0 ponto)';
+
+        itemDiv.innerHTML = `
+          <div class="corrected-item-head">
+            <span>Questão ${idx + 1}: ${q.title}</span>
+            <span class="status-badge ${statusClass}">${statusText}</span>
+          </div>
+          <p><b>Enunciado:</b> ${q.text}</p>
+          <p><b>Sua Resposta:</b> ${q.options[uAns.selected]}</p>
+          <p><b>Gabarito Oficial:</b> ${q.options[q.correct]}</p>
+          <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.9rem; margin-top: 8px;">
+            ${q.explanation}
+          </div>
+        `;
+        listContainer.appendChild(itemDiv);
+      });
+
+      // Gerar Parecer Pedagógico
+      generatePedagogicalReport(totalCorrect, questions.length);
+    }
+
+    function generatePedagogicalReport(correctCount, total) {
+      const container = document.getElementById('pedagogical-content');
+      let text = "";
+
+      if (correctCount === total) {
+        text = `<p><b>Desempenho Excelente (100% de aproveitamento)!</b><br>` +
+               `O aluno demonstrou domínio completo do Descritor <b>D097_M (Progressão Geométrica)</b>. Compreendeu com precisão os conceitos de termo geral (aₙ = a₁ · qⁿ⁻¹), identificação da razão (q), cálculo de termos específicos e aplicação da fórmula da soma dos termos da P.G. finita em contextos do cotidiano e do PAEBES.</p>`;
+      } else if (correctCount >= 3) {
+        text = `<p><b>Bom Desempenho (Aproveitamento Satisfatório)!</b><br>` +
+               `O aluno apresenta boa compreensão das propriedades fundamentais das Progressões Geométricas. Recomenda-se reforçar a atenção na distinção entre o cálculo de um termo específico (aₙ) e a soma dos termos da sequência (Sₙ), garantindo o domínio completo na resolução de problemas do PAEBES.</p>`;
+      } else {
+        text = `<p><b>Necessita de Recomposição e Reforço Pedagógico!</b><br>` +
+               `O aluno apresentou dificuldades na aplicação do Descritor D097_M. É fundamental revisar os conceitos de razão da P.G., a estrutura do termo geral (aₙ = a₁ · qⁿ⁻¹) e a identificação correta dos dados fornecidos nos problemas. Sugere-se realizar os exercícios do caderno de apoio do PAEBES com acompanhamento do professor.</p>`;
+      }
+
+      container.innerHTML = text;
+    }
+
+    function sendEvaluation() {
+      const targetEmail = document.getElementById('res-email-input').value.trim();
+      const btn = document.getElementById('btn-send-email');
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = "⏳ Enviando avaliação...";
+      }
+
+      const score = userAnswers.filter(a => a.isCorrect).length * (5.0 / questions.length);
+      const fullHtml = document.documentElement.outerHTML;
+
+      const payload = {
+        aluno: studentName,
+        turma: studentClass,
+        email: targetEmail,
+        nota: score.toFixed(1).replace('.', ','),
+        folderUrl: DESTINATION_DRIVE_FOLDER,
+        htmlContent: fullHtml
+      };
+
+      const formattedName = studentName.replace(/\s+/g, "_");
+      document.title = "Prova_Corrigida_" + formattedName + "_" + studentClass;
+
+      fetch(scriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        let msg = "✅ Prova salva com sucesso na pasta do Google Drive!";
+        if (targetEmail) {
+          msg += "\n✉️ Uma cópia em PDF também foi enviada para o e-mail: " + targetEmail;
+        }
+        alert(msg);
+        if (btn) {
+          btn.innerText = "📄 Enviar Prova Corrigida (PDF)";
+          btn.disabled = false;
+        }
+      }).catch(err => {
+        alert("Ocorreu uma falha na conexão. A janela de impressão local do PDF será aberta.");
+        if (btn) {
+          btn.innerText = "📄 Enviar Prova Corrigida (PDF)";
+          btn.disabled = false;
+        }
+        window.print();
+      });
+    }
+  </script>
+</body>
+</html>
